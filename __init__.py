@@ -31,14 +31,19 @@ def load(app):
     def view_faq():
         #extract vpn details
         userid = get_current_user().id
-        details = VPNConnection.query.filter_by(id=userid).first().privateKey
+        details = VPNConnection.query.filter_by(id=userid).first()
 
         #if vpn details dont exsist create them ( make a function later lazy man)
-        if 1 == 0:
+
+#	this code dose not exicute the update or at least dosnt seem too gather the data after running unable to get details to not = nonetype
+#	hours wasted: 3 and counting
+
+        if type(details) == None.__class__:
             db.session.add(VPNConnection(privateKey = str(keyGen()), user=userid))
-            db.session.flush()
+            db.session.commit()
             details = VPNConnection.query.filter_by(id=userid).first()
-            return render_template('page.html', content="<h1>vpn Test added details:</h1><br><p>"+ str(details)+"</p>")
+            return render_template('page.html', content="<h1>vpn Test added details:</h1><br><p>"+ str(details.privateKey)+"</p>")
 
         else:
-            return render_template('page.html', content="<h1>vpn Test</h1><br>"+ str(keyGen())+"<br><p></p>")
+
+            return render_template('page.html', content="<h1>vpn Test</h1><br>"+ str(details.privateKey)+"<br><p></p>")
