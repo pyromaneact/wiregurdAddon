@@ -10,7 +10,7 @@ from CTFd.utils.user import (
 #add table for storing each users vpn connection
 class VPNConnection(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    privateKey = db.Column(db.Text)
+    privateKey = db.Column(db.String(50))
     user = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
@@ -18,7 +18,7 @@ class VPNConnection(db.Model):
 def keyGen():
     private_key = WireguardKey.generate()
     public_key = private_key.public_key()
-    return private_key
+    return str(private_key)
 
 
 def load(app):
@@ -39,7 +39,8 @@ def load(app):
 #	hours wasted: 3 and counting
 
         if type(details) == None.__class__:
-            db.session.add(VPNConnection(privateKey = str(keyGen()), user=userid))
+            private =  keyGen()
+            db.session.add(VPNConnection(privateKey = private, user = userid))
             db.session.commit()
             details = VPNConnection.query.filter_by(id=userid).first()
             return render_template('page.html', content="<h1>vpn Test added details:</h1><br><p>"+ str(details.privateKey)+"</p>")
