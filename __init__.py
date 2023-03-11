@@ -31,7 +31,7 @@ def load(app):
     def view_faq():
         #extract vpn details
         userid = get_current_user().id
-        details = VPNConnection.query.filter_by(id=userid).first()
+        details = VPNConnection.query.filter_by(user=userid).first()
 
         #if vpn details dont exsist create them ( make a function later lazy man)
 
@@ -42,8 +42,8 @@ def load(app):
             private =  keyGen()
             db.session.add(VPNConnection(privateKey = private, user = userid))
             db.session.commit()
-            details = VPNConnection.query.filter_by(id=userid).first()
-            return render_template('page.html', content="<h1>vpn Test added details:</h1><br><p>"+ str(details.privateKey)+"</p>")
+            details = VPNConnection.query.filter_by(user=userid).first()
+            return render_template('page.html', content="<h1>vpn Test added details:</h1><br><p>"+ str(details)+"</p>")
 
         else:
 
